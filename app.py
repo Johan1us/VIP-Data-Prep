@@ -2,11 +2,15 @@ import streamlit as st
 import pandas as pd
 
 def validate_csv_structure(df):
-    validation_errors = []
+    validation_errors = {
+        'critical': [],
+        'warnings': []
+    }
     
     # Check if the dataframe is empty
     if df.empty:
-        validation_errors.append("Het CSV-bestand is leeg")
+        validation_errors['critical'].append("Het CSV-bestand is leeg")
+        return validation_errors
         
     # Check mandatory columns
     required_columns = [
@@ -21,17 +25,28 @@ def validate_csv_structure(df):
     ]
     missing_columns = [col for col in required_columns if col not in df.columns]
     if missing_columns:
-        validation_errors.append(f"Ontbrekende verplichte kolommen: {', '.join(missing_columns)}")
+        validation_errors['critical'].append({
+            'message': "Ontbrekende verplichte kolommen",
+            'details': missing_columns
+        })
     
     # Check for empty values in mandatory columns
-    if not missing_columns:  # Only check if all required columns exist
+    if not missing_columns:
         for col in required_columns:
-            if df[col].isna().any():
-                validation_errors.append(f"Kolom '{col}' bevat lege waarden.")
+            empty_count = df[col].isna().sum()
+            if empty_count > 0:
+                validation_errors['warnings'].append({
+                    'message': f"Lege waarden gevonden in kolom '{col}'",
+                    'details': f"{empty_count} rijen hebben geen waarde"
+                })
     
     # Check for duplicate rows
-    if df.duplicated().any():
-        validation_errors.append(f"Er zijn {df.duplicated().sum()} dubbele rijen gevonden")
+    duplicate_count = df.duplicated().sum()
+    if duplicate_count > 0:
+        validation_errors['warnings'].append({
+            'message': "Dubbele rijen gedetecteerd",
+            'details': f"{duplicate_count} dubbele rijen gevonden"
+        })
     
     return validation_errors
 
@@ -69,10 +84,25 @@ def main():
             st.header("🔍 Validatie Resultaten")
             validation_errors = validate_csv_structure(df)
             
-            if validation_errors:
-                st.warning("Let op: de volgende aandachtspunten zijn gevonden in uw CSV-bestand:")
-                for error in validation_errors:
-                    st.info(error)
+            if validation_errors['critical'] or validation_errors['warnings']:
+                st.warning("⚠️ Er zijn problemen gevonden in uw CSV-bestand:")
+                
+                if validation_errors['critical']:
+                    st.error("Kritieke problemen die opgelost moeten worden:")
+                    for error in validation_errors['critical']:
+                        if isinstance(error, dict):
+                            st.markdown(f"- **{error['message']}**")
+                            st.markdown("  - " + "\n  - ".join(error['details']))
+                        else:
+                            st.markdown(f"- {error}")
+                
+                if validation_errors['warnings']:
+                    st.warning("Waarschuwingen die aandacht nodig hebben:")
+                    for warning in validation_errors['warnings']:
+                        st.markdown(f"- **{warning['message']}**")
+                        st.markdown(f"  - {warning['details']}")
+                
+                st.info("📝 Tip: Los deze problemen op in uw data en upload het bestand opnieuw.")
             else:
                 st.success("✅ Uw CSV-bestand heeft alle validatiecontroles doorstaan!")
                 
