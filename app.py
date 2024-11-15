@@ -37,4 +37,4 @@ def main():
             st.write("Please make sure you've uploaded a valid CSV file.")
 
 if __name__ == "__main__":
-    main() 
+    main()
