@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import requests
+import json
 
 def validate_csv_structure(df):
     validation_errors = {
@@ -84,28 +86,56 @@ def main():
             st.header("🔍 Validatie Resultaten")
             validation_errors = validate_csv_structure(df)
             
-            if validation_errors['critical'] or validation_errors['warnings']:
-                st.warning("⚠️ Er zijn problemen gevonden in uw CSV-bestand:")
-                
-                if validation_errors['critical']:
-                    st.error("Kritieke problemen die opgelost moeten worden:")
-                    for error in validation_errors['critical']:
-                        if isinstance(error, dict):
-                            st.markdown(f"- **{error['message']}**")
-                            st.markdown("  - " + "\n  - ".join(error['details']))
-                        else:
-                            st.markdown(f"- {error}")
-                
+            if validation_errors['critical']:
+                st.error("Kritieke problemen die opgelost moeten worden:")
+                for error in validation_errors['critical']:
+                    if isinstance(error, dict):
+                        st.markdown(f"- **{error['message']}**")
+                        st.markdown("  - " + "\n  - ".join(error['details']))
+                    else:
+                        st.markdown(f"- {error}")
+                st.info("📝 Tip: Los deze kritieke problemen op in uw data en upload het bestand opnieuw.")
+            else:
                 if validation_errors['warnings']:
                     st.warning("Waarschuwingen die aandacht nodig hebben:")
                     for warning in validation_errors['warnings']:
                         st.markdown(f"- **{warning['message']}**")
                         st.markdown(f"  - {warning['details']}")
+                    st.info("📝 Tip: U kunt doorgaan met uploaden, maar het wordt aangeraden deze waarschuwingen te controleren.")
+                else:
+                    st.success("✅ Uw CSV-bestand heeft alle validatiecontroles doorstaan!")
+
+                # Convert DataFrame to JSON
+                json_data = df.to_json(orient='records', force_ascii=False)
                 
-                st.info("📝 Tip: Los deze problemen op in uw data en upload het bestand opnieuw.")
-            else:
-                st.success("✅ Uw CSV-bestand heeft alle validatiecontroles doorstaan!")
+                # Display JSON preview
+                st.subheader("🔄 JSON Preview")
+                with st.expander("Bekijk JSON data"):
+                    st.json(json_data)
                 
+                # Add upload button
+                if st.button("📤 Upload naar API"):
+                    try:
+                        # TODO: Replace with actual API endpoint and implementation
+                        # Example implementation:
+                        # response = requests.post(
+                        #     'your-api-endpoint',
+                        #     json=json.loads(json_data),
+                        #     headers={'Content-Type': 'application/json'}
+                        # )
+                        st.info("Simulating API upload...")
+                        st.success("✅ Data succesvol geüpload naar API!")
+                        
+                        # Offer JSON download as fallback
+                        st.download_button(
+                            label="⬇️ Download JSON",
+                            file_name="data.json",
+                            mime="application/json",
+                            data=json_data
+                        )
+                    except Exception as e:
+                        st.error(f"API Upload fout: {str(e)}")
+
         except Exception as e:
             st.error(f"Fout: {str(e)}")
             st.write("Zorg ervoor dat u een geldig CSV-bestand heeft geüpload.")
