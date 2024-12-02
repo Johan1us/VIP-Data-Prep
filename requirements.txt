@@ -1,0 +1,15 @@
+# Core dependencies
+pandas>=2.1.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+xlsxwriter>=3.1.0
+colorlog>=6.8.0
+urllib3>=2.1.0
+
+# Type hints
+typing-extensions>=4.9.0
+
+# Development dependencies
+pytest>=7.4.0
+black>=23.3.0
+flake8>=6.0.0
