@@ -5,7 +5,7 @@ def set_env_variables():
     env_vars = {
         'LUXS_ACCEPT_CLIENT_ID': 'your_client_id',
         'LUXS_ACCEPT_CLIENT_SECRET': 'your_client_secret',
-        'LUXS_ACCEPT_API_URL': 'http://api.accept.luxsinsights.com/',
+        'LUXS_ACCEPT_API_URL': 'https://api.accept.luxsinsights.com/',
         'LUXS_ACCEPT_AUTH_URL': 'https://auth.accept.luxsinsights.com/oauth2/token'
     }
 

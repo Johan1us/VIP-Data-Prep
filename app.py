@@ -1,10 +1,13 @@
 import streamlit as st
 import pandas as pd
 import requests
-import json
-from dotenv import load_dotenv
-import os
+from src.api_client import LuxsAcceptClient
+from src.utils.logging_config import setup_logging
+from src.config import Config
 from hashlib import sha256
+
+# Setup logging
+setup_logging()
 
 def validate_csv_structure(df):
     validation_errors = {
@@ -113,56 +116,15 @@ def validate_csv_structure(df):
     
     return validation_errors
 
-class LuxsAcceptClient:
-    def __init__(self):
-        load_dotenv()
-        self.auth_url = os.environ.get('LUXS_ACCEPT_AUTH_URL')
-        self.api_url = os.environ.get('LUXS_ACCEPT_API_URL')
-        self.client_id = os.environ.get('LUXS_ACCEPT_CLIENT_ID')
-        self.client_secret = os.environ.get('LUXS_ACCEPT_CLIENT_SECRET')
-        self.access_token = None
-
-    def authenticate(self):
-        auth_data = {
-            'grant_type': 'client_credentials',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret
-        }
-        response = requests.post(self.auth_url, data=auth_data)
-        if response.status_code == 200:
-            token_data = response.json()
-            self.access_token = token_data.get('access_token')
-            return True
-        return False
-
-    def make_request(self, endpoint, method='GET', data=None):
-        if not self.access_token:
-            if not self.authenticate():
-                raise Exception("Authentication failed")
-
-        headers = {
-            'Authorization': f'Bearer {self.access_token}',
-            'Content-Type': 'application/json'
-        }
-        
-        url = f"{self.api_url.rstrip('/')}/{endpoint.lstrip('/')}"
-        response = requests.request(
-            method=method,
-            url=url,
-            headers=headers,
-            json=data
-        )
-        return response
-
 def prepare_api_payload(df):
     """Convert DataFrame to API payload format"""
     payload = []
     for _, row in df.iterrows():
         object_data = {
             "objectType": "Unit",
-            "identifier": row['identifier'],  # Assuming this column exists
+            "identifier": row['identifier'],
             "parentObjectType": "Building",
-            "parentIdentifier": row['parentIdentifier'],  # Assuming this column exists
+            "parentIdentifier": row['parentIdentifier'],
             "attributes": {}
         }
         
@@ -182,12 +144,11 @@ def check_password():
         """Checks whether a password entered by the user is correct."""
         if sha256(st.session_state["password"].encode()).hexdigest() == st.secrets["password"]:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Verwijder wachtwoord uit session state
+            del st.session_state["password"]
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        # First run, show input for password
         st.text_input(
             "Wachtwoord", 
             type="password", 
@@ -196,7 +157,6 @@ def check_password():
         )
         return False
     elif not st.session_state["password_correct"]:
-        # Password incorrect, show input + error
         st.text_input(
             "Wachtwoord", 
             type="password", 
@@ -206,7 +166,6 @@ def check_password():
         st.error("😕 Wachtwoord incorrect")
         return False
     else:
-        # Password correct
         return True
 
 # Custom CSS for minimal, Outlook-like design
@@ -297,7 +256,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Create a minimal header
 def create_header():
     header_container = st.container()
     with header_container:
@@ -313,11 +271,7 @@ def main():
     if 'show_settings' not in st.session_state:
         st.session_state.show_settings = False
     
-    # Load environment variables at startup
-    load_dotenv()
-    
     if not check_password():
-        # Login page with minimal design
         st.markdown("""
             <div style='padding: 2rem; max-width: 400px; margin: 0 auto;'>
                 <h2 style='color: #2b579a; margin-bottom: 2rem;'>Login</h2>
