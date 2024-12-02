@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  vip-data-prep:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - LUXS_ACCEPT_CLIENT_ID=${LUXS_ACCEPT_CLIENT_ID}
+      - LUXS_ACCEPT_CLIENT_SECRET=${LUXS_ACCEPT_CLIENT_SECRET}
+      - LUXS_ACCEPT_API_URL=https://api.accept.luxsinsights.com/
+      - LUXS_ACCEPT_AUTH_URL=https://auth.accept.luxsinsights.com/oauth2/token
