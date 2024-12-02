@@ -1,2 +1,15 @@
+# Environment variables
+.env
+*.env
+set_luxs_env.bat
 
+# IDE files
+.idea/
+__pycache__/
+*.pyc
 
+# Logs
+*.log
+
+# Generated files
+*.xlsx
