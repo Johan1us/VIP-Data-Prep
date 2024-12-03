@@ -1,7 +1,8 @@
-import os
-from dotenv import load_dotenv
-import requests
 import json
+import os
+
+import requests
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
@@ -9,8 +10,9 @@ load_dotenv()
 TOKEN_URL = "https://auth.accept.luxsinsights.com/oauth2/token"
 
 # Get credentials from environment variables
-CLIENT_ID = os.environ.get('LUXS_ACCEPT_CLIENT_ID')
-CLIENT_SECRET = os.environ.get('LUXS_ACCEPT_CLIENT_SECRET')
+CLIENT_ID = os.environ.get("LUXS_ACCEPT_CLIENT_ID")
+CLIENT_SECRET = os.environ.get("LUXS_ACCEPT_CLIENT_SECRET")
+
 
 # print(CLIENT_ID)
 # print(CLIENT_SECRET)
@@ -23,9 +25,9 @@ def get_token():
     try:
         # Prepare the request for OAuth2 client credentials flow
         auth_data = {
-            'grant_type': 'client_credentials',
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET
+            "grant_type": "client_credentials",
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET,
         }
 
         print("🔄 Attempting authentication...")
@@ -39,7 +41,7 @@ def get_token():
             print("✅ Authentication successful!")
             print(f"Token type: {token_data.get('token_type', 'N/A')}")
             print(f"Expires in: {token_data.get('expires_in', 'N/A')} seconds")
-            TOKEN = token_data.get('access_token')
+            TOKEN = token_data.get("access_token")
             return TOKEN
         else:
             print(f"❌ Authentication failed with status code: {response.status_code}")
@@ -53,37 +55,33 @@ def get_token():
         print(f"❌ Unexpected error: {str(e)}")
         return False
 
+
 def get_metadata(object_type, token=None):
     """
     Fetches metadata for specified object type from the LUXS Accept API.
-    
+
     Args:
         object_type (str): The type of object to fetch metadata for (e.g., 'Aanrecht')
         token (str, optional): Existing bearer token. If None, will fetch new token.
-        
+
     Returns:
         dict: Metadata if successful, False otherwise
     """
     METADATA_URL = "https://api.accept.luxsinsights.com/v1/metadata"
-    
+
     try:
         # Use provided token or get new one
         TOKEN = token if token else get_token()
         if not TOKEN:
             return False
 
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"Bearer {TOKEN}"
-        }
+        headers = {"Accept": "application/json", "Authorization": f"Bearer {TOKEN}"}
 
         # Prepare request parameters
-        params = {
-            'objectType': object_type
-        }
+        params = {"objectType": object_type}
 
         print(f"\n🔄 Fetching metadata for {object_type}...")
-        
+
         response = requests.get(METADATA_URL, headers=headers, params=params)
 
         # Check if request was successful
@@ -105,6 +103,7 @@ def get_metadata(object_type, token=None):
     except Exception as e:
         print(f"❌ Unexpected error: {str(e)}")
         return False
+
 
 # https://api.accept.luxsinsights.com/v1/objects/filterByObjectType?objectType=Unit&identifier=10000000025
 def get_object_by_filter(object_type, attributes_filter, identifier, token=None):
@@ -128,16 +127,10 @@ def get_object_by_filter(object_type, attributes_filter, identifier, token=None)
         if not TOKEN:
             return False
 
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"Bearer {TOKEN}"
-        }
+        headers = {"Accept": "application/json", "Authorization": f"Bearer {TOKEN}"}
 
         # Prepare request parameters
-        params = {
-            'objectType': object_type,
-            'identifier': identifier
-        }
+        params = {"objectType": object_type, "identifier": identifier}
 
         print(f"\n🔄 Fetching {object_type} object with filter...")
         print("\nFilter attributes:")
@@ -181,7 +174,7 @@ def create_object(object_type, data, token=None):
         headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {TOKEN}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         print(f"\n🔄 Creating new {object_type} object...")
@@ -209,35 +202,44 @@ def create_object(object_type, data, token=None):
         print(f"❌ Unexpected error: {str(e)}")
         return False
 
+
 def update_toilet_floor(unit_id, new_value="Hout", token=None):
     """
     Updates the floor material attribute for a toilet unit.
-    
+
     Args:
         unit_id (str): The identifier of the Unit object
         new_value (str): The new floor material value (default: "Hout")
         token (str, optional): Authentication token
-    
+
     Returns:
         dict: Response data if successful, False otherwise
     """
     # Validate the new_value against allowed options
     VALID_VALUES = ["Beton", "Hout", "Lewisplaat"]
     if new_value not in VALID_VALUES:
-        print(f"❌ '{new_value}' is an invalid value. Must be one of: {', '.join(VALID_VALUES)}")
+        print(
+            f"❌ '{new_value}' is an invalid value. Must be one of: "
+            f"{', '.join(VALID_VALUES)}"
+        )
         return False
 
-    update_data = [{
-        "objectType": "Unit",
-        "identifier": unit_id,
-        "parentObjectType": "Building",
-        "parentIdentifier": "11000",
-        "attributes": {
-            "Opbouw + materialisering vloer - Toilet 2e -  Woonstad Rotterdam": new_value
+    update_data = [
+        {
+            "objectType": "Unit",
+            "identifier": unit_id,
+            "parentObjectType": "Building",
+            "parentIdentifier": "11000",
+            "attributes": {
+                "Opbouw + materialisering vloer - Toilet 2e -  Woonstad Rotterdam": (
+                    new_value
+                )
+            },
         }
-    }]
+    ]
 
-    return create_object('Unit', update_data, token=token)
+    return create_object("Unit", update_data, token=token)
+
 
 if __name__ == "__main__":
     print("\n=== LUXS Accept API Authentication Check ===")
@@ -253,9 +255,9 @@ if __name__ == "__main__":
         # print(f"\nResponse: {response}")
 
         # Example usage of get_object_by_filter
-        object_data = get_object_by_filter('Unit', {"identifier": "10000000025"}, "10000000025", token=token)
-
-
+        object_data = get_object_by_filter(
+            "Unit", {"identifier": "10000000025"}, "10000000025", token=token
+        )
 
         # Example data structure
         # sample_data = [
@@ -278,5 +280,3 @@ if __name__ == "__main__":
         # ]
         #
         # new_object = create_object('Space', sample_data, token=token)
-
-
