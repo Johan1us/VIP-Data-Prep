@@ -1,13 +1,7 @@
 import logging
-import sys
+from typing import Optional
 
-def setup_logging(level=logging.INFO):
-    """Configure logging for the application"""
-    logging.basicConfig(
-        level=level,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-            logging.FileHandler('app.log')
-        ]
-    ) 
+
+def setup_logging(level: Optional[int] = None) -> None:
+    """Setup logging configuration."""
+    # ... rest of the code ...
