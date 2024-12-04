@@ -1,4 +1,4 @@
-# LUXS API Client
+# vip-data-prep
 
 ## Setup
 1. Copy `.env.template` to `.env`
@@ -8,4 +8,30 @@
 ## Usage
 ```bash
 streamlit run app.py
+```
+
+## Pre-commit
+```bash
+pre-commit run --all-files
+```
+
+## Docker
+```bash
+docker build -t  .
+docker run -p 8501:8501 vip-data-prep
+```
+
+## Docker Compose
+```bash
+docker-compose up
+```
+
+## Docker Compose Rebuid
+```bash
+docker-compose up --build
+```
+
+## Docker Compose Down
+```bash
+docker-compose down
 ```
