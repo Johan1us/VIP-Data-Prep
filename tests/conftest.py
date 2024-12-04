@@ -1,5 +1,10 @@
+import os
+import sys
 import pytest
 
+# Add src directory to Python path
+src_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.append(src_path)
 
 @pytest.fixture
 def mock_config():
@@ -10,7 +15,6 @@ def mock_config():
         "LUXS_ACCEPT_AUTH_URL": "https://auth.test.com",
     }
 
-
 @pytest.fixture
 def api_client(mock_config, monkeypatch):
     # Mock environment variables
@@ -18,5 +22,4 @@ def api_client(mock_config, monkeypatch):
         monkeypatch.setenv(key, value)
 
     from src.api_client import LuxsAcceptClient
-
     return LuxsAcceptClient()
