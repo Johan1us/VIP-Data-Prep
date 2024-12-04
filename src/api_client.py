@@ -1,10 +1,11 @@
 import logging
 from urllib.parse import urlparse
+from typing import Optional, List, Dict, Any
 
 import requests
 
-from .config import Config
-from .utils.logging_config import setup_logging
+from config import Config
+from utils.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -60,24 +61,32 @@ class LuxsAcceptClient:
             logger.error(f"URL validation failed: {str(e)}")
             return False
 
-    def authenticate(self):
-        """Authenticate with the API using OAuth2 client credentials flow"""
+    def authenticate(self) -> Optional[str]:
+        """Get authentication token from LUXS API."""
         logger.info("Attempting authentication...")
-        auth_data = {
-            "grant_type": "client_credentials",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-        }
+
         try:
+            auth_data = {
+                "grant_type": "client_credentials",
+                "client_id": self.client_id,
+                "client_secret": self.client_secret,
+            }
+
             response = requests.post(self.auth_url, data=auth_data)
-            response.raise_for_status()
-            token_data = response.json()
-            self.access_token = token_data.get("access_token")
-            logger.info("Authentication successful")
-            return True
+
+            if response.status_code == 200:
+                token_data = response.json()
+                self.access_token = token_data.get("access_token")
+                logger.info("Authentication successful")
+                return self.access_token
+            else:
+                logger.error(f"Authentication failed with status code: {response.status_code}")
+                logger.error(f"Error: {response.text}")
+                return None
+
         except Exception as e:
-            logger.error(f"Authentication failed: {str(e)}")
-            return False
+            logger.error(f"Authentication error: {str(e)}")
+            return None
 
     def make_request(self, endpoint, method="GET", data=None, params=None):
         """
@@ -112,3 +121,37 @@ class LuxsAcceptClient:
         except requests.exceptions.RequestException as e:
             logger.error(f"Request failed: {str(e)}")
             raise
+
+    def update_buildings(self, buildings_data: List[Dict[str, Any]]) -> bool:
+        """Update buildings via PUT request to LUXS API"""
+        logger.info(f"Updating {len(buildings_data)} buildings...")
+
+        try:
+            # Get fresh token
+            token = self.authenticate()
+            if not token:
+                logger.error("Failed to authenticate for building update")
+                return False
+
+            # Prepare request
+            url = "https://api.accept.luxsinsights.com/v1/objects"
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
+
+            # Send PUT request
+            response = requests.put(url, headers=headers, json=buildings_data)
+
+            if response.status_code == 200:
+                logger.info(f"Successfully updated {len(buildings_data)} buildings")
+                return True
+
+            logger.error(f"Building update failed with status code: {response.status_code}")
+            logger.error(f"Error response: {response.text}")
+            return False
+
+        except Exception as e:
+            logger.error(f"Error updating buildings: {str(e)}")
+            return False

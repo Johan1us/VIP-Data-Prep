@@ -1,5 +1,5 @@
 import pandas as pd
-from src.api_client import LuxsAcceptClient
+from api_client import LuxsAcceptClient
 
 def prepare_api_payload(df: pd.DataFrame) -> list[dict]:
     """Convert DataFrame to API payload format"""

@@ -5,9 +5,15 @@
 2. Fill in your API credentials in `.env`
 3. Install dependencies: `pip install -r requirements.txt`
 
-## Usage
+
+## Go to the app directory
 ```bash
-streamlit run app.py
+cd src
+```
+
+## Run locally with reload
+```bash
+cd src && streamlit run app.py
 ```
 
 ## Pre-commit
