@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List, Dict, Any, Optional
 import requests
 import io
+from utils.excel_utils import ExcelHandler
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +53,8 @@ class PODakenService:
             logger.error(error_msg)
             raise RuntimeError(error_msg)
 
+        self.excel_handler = ExcelHandler(self.METADATA)
+
     def get_all_buildings(self) -> Optional[List[Dict[str, Any]]]:
         """Fetch all buildings with roof-related attributes"""
         logger.info("Starting to fetch all buildings...")
@@ -94,132 +97,7 @@ class PODakenService:
 
     def export_to_excel(self, data: List[Dict[str, Any]]) -> io.BytesIO:
         """Export building data to Excel and return as BytesIO object"""
-        logger.info("Exporting data to Excel")
-        if not data:
-            logger.error("No data to export")
-            raise ValueError("No data to export")
-
-        try:
-            # Create a BytesIO object to hold the Excel file
-            output = io.BytesIO()
-
-            # Create Excel writer with xlsxwriter engine
-            writer = pd.ExcelWriter(output, engine="xlsxwriter")
-
-            # Create DataFrame and process it
-            df = pd.DataFrame(data)
-            df = pd.concat(
-                [df.drop(["attributes"], axis=1), df["attributes"].apply(pd.Series)],
-                axis=1,
-            )
-
-            # Keep only the columns we need
-            columns = [
-                "objectType",
-                "identifier",
-                "Dakpartner - Building - Woonstad Rotterdam",
-                "Jaar laatste dakonderhoud - Building - Woonstad Rotterdam",
-                "Betrokken Projectleider Techniek Daken - Building - Woonstad Rotterdam",
-                "Dakveiligheidsvoorzieningen aangebracht  - Building - Woonstad Rotterdam",
-                "Antenne(opstelplaats) op dak  - Building - Woonstad Rotterdam",
-            ]
-            df = df[columns]
-
-            # Write to Excel
-            df.to_excel(writer, index=False, sheet_name="Data")
-
-            # Add validation lists and data validation
-            self._add_excel_validation(writer, df, columns)
-
-            # Save and return the BytesIO object
-            writer.close()
-            output.seek(0)
-
-            logger.info("Excel file generated successfully")
-            return output
-
-        except Exception as e:
-            logger.error(f"Error exporting to Excel: {str(e)}")
-            raise
-
-    def _add_excel_validation(self, writer, df, columns):
-        """Add data validation to Excel file"""
-        workbook = writer.book
-        worksheet = writer.sheets["Data"]
-        lookup_sheet = workbook.add_worksheet("Lookup_Lists")
-
-        # Add validation lists
-        self._add_validation_lists(workbook, lookup_sheet)
-
-        # Add column validation
-        start_row = 1
-        end_row = len(df) + 1
-
-        # Add validation for specific columns
-        self._add_column_validation(worksheet, columns, start_row, end_row)
-
-    def _add_validation_lists(self, workbook, lookup_sheet):
-        """Add validation lists to lookup sheet"""
-        # Dakpartner options
-        dakpartner_options = self.METADATA["dakpartner"]["attributeValueOptions"]
-        for row_num, option in enumerate(dakpartner_options):
-            lookup_sheet.write(row_num, 0, option)
-        dakpartner_list_range = f"'Lookup_Lists'!$A$1:$A${len(dakpartner_options)}"
-        workbook.define_name("DakpartnerList", f"={dakpartner_list_range}")
-
-        # Projectleider options
-        projectleider_options = self.METADATA["projectleider"]["attributeValueOptions"]
-        for row_num, option in enumerate(projectleider_options):
-            lookup_sheet.write(row_num, 1, option)
-        projectleider_list_range = f"'Lookup_Lists'!$B$1:$B${len(projectleider_options)}"
-        workbook.define_name("ProjectleiderList", f"={projectleider_list_range}")
-
-        # Boolean options
-        boolean_options = ["TRUE", "FALSE"]
-        for row_num, option in enumerate(boolean_options):
-            lookup_sheet.write(row_num, 2, option)
-        boolean_list_range = f"'Lookup_Lists'!$C$1:$C${len(boolean_options)}"
-        workbook.define_name("BooleanList", f"={boolean_list_range}")
-
-    def _add_column_validation(self, worksheet, columns, start_row, end_row):
-        """Add data validation to specific columns"""
-        # Dakpartner validation
-        dakpartner_col = columns.index("Dakpartner - Building - Woonstad Rotterdam")
-        worksheet.data_validation(
-            start_row,
-            dakpartner_col,
-            end_row,
-            dakpartner_col,
-            {"validate": "list", "source": "=DakpartnerList"},
-        )
-
-        # Projectleider validation
-        projectleider_col = columns.index(
-            "Betrokken Projectleider Techniek Daken - Building - Woonstad Rotterdam"
-        )
-        worksheet.data_validation(
-            start_row,
-            projectleider_col,
-            end_row,
-            projectleider_col,
-            {"validate": "list", "source": "=ProjectleiderList"},
-        )
-
-        # Boolean validations
-        boolean_columns = [
-            "Dakveiligheidsvoorzieningen aangebracht  - Building - Woonstad Rotterdam",
-            "Antenne(opstelplaats) op dak  - Building - Woonstad Rotterdam",
-        ]
-        for col_name in boolean_columns:
-            if col_name in columns:
-                col_index = columns.index(col_name)
-                worksheet.data_validation(
-                    start_row,
-                    col_index,
-                    end_row,
-                    col_index,
-                    {"validate": "list", "source": "=BooleanList"},
-                )
+        return self.excel_handler.create_excel_file(data)
 
     def process_uploaded_data(self, df: pd.DataFrame) -> bool:
         """Process and validate uploaded Excel data"""
