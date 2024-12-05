@@ -123,32 +123,38 @@ class ExcelHandler:
             'bg_color': '#ededed',  # Lichtgrijs
             'align': 'left',        # Links uitlijnen
             'border': 1,            # Dunne rand
-            'locked': True          # Header cellen zijn vergrendeld
+            'locked': False          # Header cellen zijn niet vergrendeld
         })
 
-        locked_format = workbook.add_format({'locked': True, 'align': 'left'})
         unlocked_format = workbook.add_format({'locked': False, 'align': 'right'})
 
-        # Bevries de eerste rij en kolommen A & B
-        worksheet.freeze_panes(1, 2)
+        # Pas het header formaat toe op de header rij
+        for col_num, value in enumerate(self.required_columns):
+            worksheet.write(0, col_num, value, header_format)
+
+        # Pas het ontgrendelde formaat toe op alle kolommen A t/m G
+        worksheet.set_column('A:B', 15, unlocked_format)
+        worksheet.set_column('C:G', 30, unlocked_format)
 
         # Voeg filters toe aan de eerste rij
         worksheet.autofilter(0, 0, 0, len(self.required_columns) - 1)
 
-        # Stel kolombreedtes en formaten in
-        worksheet.set_column('A:B', 15, locked_format)  # Kolommen A & B, vergrendeld en links uitgelijnd
-        worksheet.set_column('C:G', 30, unlocked_format)  # Overige kolommen, ontgrendeld en links uitgelijnd
+        # Bevries de eerste rij en kolommen A & B
+        worksheet.freeze_panes(1, 2)
 
-        # Pas het header formaat alleen toe op de header rij
-        for col_num, value in enumerate(self.required_columns):
-            worksheet.write(0, col_num, value, header_format)
-
-        # Bescherm het worksheet (standaard zijn alle cellen vergrendeld)
+        # Bescherm het werkblad met sorteer- en filteropties ingeschakeld
         worksheet.protect('', {
-            'format_cells': True,
-            'format_columns': True,
             'sort': True,
             'autofilter': True,
+            'select_locked_cells': True,
+            'select_unlocked_cells': True,
+            'format_cells': False,
+            'format_columns': False,
+            'format_rows': False,
+            'insert_columns': False,
+            'insert_rows': False,
+            'delete_columns': False,
+            'delete_rows': False,
         })
 
         # Maak een nieuwe worksheet voor de validatielijsten
@@ -212,6 +218,21 @@ class ExcelHandler:
         - start_row: De start rij voor validatie.
         - end_row: De eind rij voor validatie.
         """
+
+        # Voeg waarschuwing toe voor kolommen A en B
+        for col in [0, 1]:  # Kolommen A en B
+            worksheet.data_validation(
+                start_row,
+                col,
+                end_row,
+                col,
+                {
+                    'validate': 'any',
+                    'input_title': 'Let op!',
+                    'input_message': 'Deze kolom mag niet worden aangepast.',
+                    'show_input': True
+                }
+            )
 
         # Validatie voor 'Dakpartner' kolom
         dakpartner_col = self.required_columns.index("Dakpartner - Building - Woonstad Rotterdam")
