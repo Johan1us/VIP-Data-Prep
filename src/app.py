@@ -4,6 +4,7 @@ from _pages import home, po_daken
 from utils.logging_config import setup_logging
 import hashlib
 import logging
+from api.api_client import LuxsAcceptClient
 
 # Configuratie van de logging
 logging.basicConfig(
@@ -50,7 +51,7 @@ def load_css():
     """
     Laad aangepaste CSS-stijlen voor de toepassing.
     """
-    css_bestand = "../static/css/style.css"  # Pad naar het CSS-bestand
+    css_bestand = "src/static/css/style.css"  # Pad naar het CSS-bestand
     with open(css_bestand) as f:
         # Injecteer de CSS in de Streamlit applicatie
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -65,6 +66,8 @@ def initialize_session_state():
         st.session_state.log_messages = []  # Lijst voor logberichten
     if "current_page" not in st.session_state:
         st.session_state.current_page = "Home"  # Standaardpagina instellen
+    if "api_client" not in st.session_state:
+        st.session_state.api_client = LuxsAcceptClient()  # Initialize API client once
 
 def main() -> None:
     """
@@ -90,8 +93,8 @@ def main() -> None:
     # Navigatiebalk in de zijbalk
     st.sidebar.title("Navigatie")
     paginas = {
-        "Home": ("🏠", home.render),  # Paginanaam: (Icon, render functie)
-        "PO Daken": ("🏢", po_daken.render)
+        "Home": ("🏠", lambda: home.render()),  # Paginanaam: (Icon, render functie)
+        "PO Daken": ("🏢", lambda: po_daken.render(st.session_state.api_client))
     }
 
     # Laat de gebruiker een pagina selecteren

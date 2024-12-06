@@ -6,7 +6,7 @@ from services.po_daken_service import PODakenService
 logger = logging.getLogger(__name__)
 
 
-def render():
+def render(luxs_api_client):
     """
     Deze functie rendert de PO Daken pagina met Streamlit.
     De pagina is opgedeeld in twee tabbladen:
@@ -17,7 +17,8 @@ def render():
 
     try:
         # 1. Initialiseer de service voor PO Daken.
-        po_daken_service = PODakenService()
+        po_daken_service = PODakenService(luxs_api_client)
+        logger.debug("PO Daken service geïnitialiseerd")
 
         # 2. Maak twee tabbladen aan: "Download Data" en "Upload Updates"
         tab1, tab2 = st.tabs(["Download Data", "Upload Updates"])

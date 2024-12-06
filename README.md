@@ -16,6 +16,11 @@ cd src
 cd src && streamlit run app.py
 ```
 
+## Run locally with reload
+```bash
+streamlit run src/app.py
+```
+
 ## Pre-commit
 ```bash
 pre-commit run --all-files

@@ -1,0 +1,402 @@
+[
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9933477",
+    "creationDate": "2022-09-12T21:31:04Z",
+    "lastChangeDate": "2024-10-15T05:06:46Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Korte Kade 76 (SW 075)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "42032 - Korte Kade 76 (SW 075)",
+      "Uniek_ID": "IfcUpload_9933477",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9933478",
+    "creationDate": "2022-09-12T21:31:04Z",
+    "lastChangeDate": "2023-01-20T20:54:49Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Oostzeedijk 34 (SW 052)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "47019 - Oostzeedijk 34 (SW 052)",
+      "Uniek_ID": "IfcUpload_9933478",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9936744",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": "2023-04-05T18:44:42Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Reno 5e Bloem",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "81082 - Reno 5e Bloem",
+      "Uniek_ID": "IfcUpload_9936744",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9937508",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": "2022-10-20T04:25:52Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Bloem 6 verkoop",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "81059 - Bloem 6 verkoop",
+      "Uniek_ID": "IfcUpload_9937508",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9938616",
+    "creationDate": "2022-09-12T21:31:05Z",
+    "lastChangeDate": "2024-10-15T04:56:21Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Voorschoterlaan 113 (SW 038)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "42026 - Voorschoterlaan 113 (SW 038)",
+      "Uniek_ID": "IfcUpload_9938616",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9938617",
+    "creationDate": "2022-08-09T15:46:46Z",
+    "lastChangeDate": "2024-10-15T04:49:57Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Prinses Julianalaan 68 (SW 035)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "42023 - Prinses Julianalaan 68 (SW 035)",
+      "Uniek_ID": "IfcUpload_9938617",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9941698",
+    "creationDate": "2022-09-12T21:31:08Z",
+    "lastChangeDate": "2023-01-20T20:54:52Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Oostzeedijk 34 (SW 052)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "47019 - Oostzeedijk 34 (SW 052)",
+      "Uniek_ID": "IfcUpload_9941698",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9946423",
+    "creationDate": "2022-09-12T21:31:04Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "EGW Vosmaerstraat",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "23132 - EGW Vosmaerstraat",
+      "Uniek_ID": "IfcUpload_9946423",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9948302",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "De Vlonders 2",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "77795 - De Vlonders 2",
+      "Uniek_ID": "IfcUpload_9948302",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9957732",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "De Vijvers I",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "77212 - De Vijvers I",
+      "Uniek_ID": "IfcUpload_9957732",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9961474",
+    "creationDate": "2022-09-12T21:31:07Z",
+    "lastChangeDate": "2024-10-15T04:51:34Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Voorschoterlaan 61 (SW 037)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "42025 - Voorschoterlaan 61 (SW 037)",
+      "Uniek_ID": "IfcUpload_9961474",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9962442",
+    "creationDate": "2022-09-12T21:31:05Z",
+    "lastChangeDate": "2023-01-20T20:20:00Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "TARWESTRAAT",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "71041 - TARWESTRAAT",
+      "Uniek_ID": "IfcUpload_9962442",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9965345",
+    "creationDate": "2022-09-12T21:31:04Z",
+    "lastChangeDate": "2024-10-15T05:11:02Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Oostzeedijk Beneden (SW 078)",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "42036 - Oostzeedijk Beneden (SW 078)",
+      "Uniek_ID": "IfcUpload_9965345",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9965356",
+    "creationDate": "2022-08-29T14:52:47Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "GERST/SPELT I",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "71101 - GERST/SPELT I",
+      "Uniek_ID": "IfcUpload_9965356",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9965486",
+    "creationDate": "2022-09-12T21:31:08Z",
+    "lastChangeDate": "2023-01-20T19:21:55Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "KAT LAGEDIJK I",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "71001 - KAT LAGEDIJK I",
+      "Uniek_ID": "IfcUpload_9965486",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9981613",
+    "creationDate": "2022-09-12T21:31:05Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Wielewaal Oost fase 3",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "75076 - Wielewaal Oost fase 3",
+      "Uniek_ID": "IfcUpload_9981613",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9987173",
+    "creationDate": "2022-09-12T21:31:05Z",
+    "lastChangeDate": "2022-10-31T16:13:51Z",
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "Zinkerblok",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "87352 - Zinkerblok",
+      "Uniek_ID": "IfcUpload_9987173",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_9987174",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "EGW Zestienhoven",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "55001 - EGW Zestienhoven",
+      "Uniek_ID": "IfcUpload_9987174",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_11935432",
+    "creationDate": "2022-09-12T21:31:04Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "BORSELAERSTR/SPYKENISSES. blok 2",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "71282 - BORSELAERSTR/SPYKENISSES. blok 2",
+      "Uniek_ID": "IfcUpload_11935432",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  },
+  {
+    "objectType": "IfcUpload",
+    "identifier": "IfcUpload_11935485",
+    "creationDate": "2022-09-12T21:31:06Z",
+    "lastChangeDate": null,
+    "deleted": false,
+    "activeFrom": null,
+    "activeTo": null,
+    "attributes": {
+      "Clusternaam - IfcUpload - Woonstad Rotterdam": "VVE Van Malsenstr. KB",
+      "BagVerblijfsobjectId": null,
+      "Active to": null,
+      "Active from": null,
+      "Cluster": "82066 - VVE Van Malsenstr. KB",
+      "Uniek_ID": "IfcUpload_11935485",
+      "OGE Nummer": "Geen",
+      "BagPandId": null,
+      "Adres": "Geen"
+    }
+  }
+]
