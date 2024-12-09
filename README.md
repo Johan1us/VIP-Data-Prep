@@ -6,16 +6,6 @@
 3. Install dependencies: `pip install -r requirements.txt`
 
 
-## Go to the app directory
-```bash
-cd src
-```
-
-## Run locally with reload
-```bash
-cd src && streamlit run app.py
-```
-
 ## Run locally with reload
 ```bash
 streamlit run src/app.py
@@ -46,3 +36,8 @@ docker-compose up --build
 ```bash
 docker-compose down
 ```
+![img.png](img.png)
+
+Sla je gegevens nu op, want na het sluiten van het venster heb je er geen toegang meer toe!
+Client ID:264lpus2kucffqsphklru375mh
+Client secret:bvq5bafhn1780n4rm71qf4t172m0uklhocvqgvqu9289hqr5sm6

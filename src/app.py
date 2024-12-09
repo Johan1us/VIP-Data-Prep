@@ -1,117 +1,161 @@
 import streamlit as st
 from components.header import create_header
-from _pages import home, po_daken
+from paginas import home, po_daken
 from utils.logging_config import setup_logging
 import hashlib
 import logging
-from api.api_client import LuxsAcceptClient
+import sys
+from api.api_client import LuxsClient
 
-# Configuratie van de logging
+# ----------------------------------------
+# Log-instellingen configureren
+# ----------------------------------------
+# Forceer UTF-8 encoding voor logging output
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
+
 logging.basicConfig(
-    level=logging.DEBUG,  # Logniveau instellen op DEBUG voor gedetailleerde informatie
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',  # Formaat van logberichten
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),  # Log naar de console
-        logging.FileHandler('app.log')  # Log naar het bestand 'app.log'
+        logging.StreamHandler(sys.stdout),  # Use stdout with UTF-8 encoding
+        logging.FileHandler('app.log', encoding='utf-8')  # Specify UTF-8 encoding for file
     ]
 )
 
-logger = logging.getLogger(__name__)  # Logger voor deze module
+logger = logging.getLogger(__name__)
 
-setup_logging()  # Extra logginginstellingen initialiseren
+# Voer extra loggingconfiguratie uit via een aparte functie
+setup_logging()
+
 
 def check_password() -> bool:
     """
     Controleer of de gebruiker het juiste wachtwoord heeft ingevoerd.
+    Het wachtwoord is opgeslagen als een SHA-256 hash in st.secrets.
 
     Returns:
-        bool: True als het wachtwoord correct is, anders False.
+        bool: True als het wachtwoord correct is, False als het fout is of niet is ingevoerd.
     """
-    # Controleer of de status van het wachtwoord al is opgeslagen in de sessie
+    # Controleer of we al weten of het wachtwoord correct is
     if "password_correct" not in st.session_state:
-        st.session_state.password_correct = False  # Standaard instellen op False
+        st.session_state.password_correct = False
 
+    # Als het wachtwoord al eens correct is ingevoerd, direct True teruggeven
     if st.session_state.password_correct:
-        return True  # Toegang verlenen als het wachtwoord al correct is
+        return True
 
-    # Vraag de gebruiker om het wachtwoord in te voeren
+    # Gebruiker om een wachtwoord vragen
     wachtwoord = st.text_input("Wachtwoord", type="password")
+
+    # Als de gebruiker iets heeft ingevoerd, controleer dan de hash
     if wachtwoord:
-        # Vergelijk de SHA-256 hash van het ingevoerde wachtwoord met de opgeslagen hash
-        if hashlib.sha256(wachtwoord.encode()).hexdigest() == st.secrets["password"]:
-            st.session_state.password_correct = True  # Markeer als correct
-            st.rerun()  # Herlaad de toepassing
+        # Vergelijk de SHA-256 hash van het ingevoerde wachtwoord met de hash uit st.secrets
+        ingevoerde_hash = hashlib.sha256(wachtwoord.encode()).hexdigest()
+        if ingevoerde_hash == st.secrets["password"]:
+            # Als het klopt, sla dit op en herlaad de pagina
+            st.session_state.password_correct = True
+            st.rerun()
             return True
         else:
-            st.error("❌ Onjuist wachtwoord")  # Toon foutmelding
+            # Als het niet klopt, laat een foutmelding zien
+            st.error("❌ Onjuist wachtwoord")
             return False
-    return False  # Geen wachtwoord ingevoerd
+
+    # Geen wachtwoord ingevoerd, dus nog geen toegang
+    return False
+
 
 def load_css():
     """
-    Laad aangepaste CSS-stijlen voor de toepassing.
+    Laad aangepaste CSS-stijlen om het uiterlijk van de Streamlit-app aan te passen.
     """
-    css_bestand = "src/static/css/style.css"  # Pad naar het CSS-bestand
+    css_bestand = "src/static/css/style.css"
     with open(css_bestand) as f:
-        # Injecteer de CSS in de Streamlit applicatie
+        # Met 'unsafe_allow_html=True' kunnen we zelf HTML/CSS injecteren.
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 def initialize_session_state():
     """
-    Initialiseert de nodige sessiestatusvariabelen.
+    Initialiseert alle benodigde variabelen in de Streamlit sessie.
+    Hierdoor kunnen we gegevens bewaren tijdens navigatie zonder dat deze verloren gaan.
     """
+    if "environment" not in st.session_state:
+        st.session_state.environment = "Acceptatie"  # Default waarde
+
     if "show_settings" not in st.session_state:
-        st.session_state.show_settings = True  # Standaard instellingen verbergen
+        # Geeft aan of we een instellingenpaneel laten zien (True/False).
+        st.session_state.show_settings = True
+
     if "log_messages" not in st.session_state:
-        st.session_state.log_messages = []  # Lijst voor logberichten
+        # Hierin kunnen we logberichten opslaan die we in de UI willen tonen.
+        st.session_state.log_messages = []
+
     if "current_page" not in st.session_state:
-        st.session_state.current_page = "Home"  # Standaardpagina instellen
+        # Huidige geopende pagina. Standaard naar "Home".
+        st.session_state.current_page = "Home"
+
     if "api_client" not in st.session_state:
-        st.session_state.api_client = LuxsAcceptClient()  # Initialize API client once
+        # Maak één keer een API-client object aan en bewaar het.
+        st.session_state.api_client = LuxsClient(environment=st.session_state.environment)
+
 
 def main() -> None:
     """
-    Hoofdfunctie die de Streamlit toepassing uitvoert.
+    Hoofdfunctie van de Streamlit-app.
+    Deze functie regelt de totale flow: CSS laden, sessie init,
+    inloggen, header tonen, navigatie en het tonen van de geselecteerde pagina.
     """
-    load_css()  # Laad de aangepaste CSS
-    initialize_session_state()  # Initialiseer sessiestatus
+    # 1. Laad de aangepaste CSS
+    load_css()
 
-    if not check_password():
-        # Toon alleen het inlogscherm als het wachtwoord niet correct is
-        st.markdown(
-            """
-            <div style='padding: 2rem; max-width: 400px; margin: 0 auto;'>
-                <h2 style='color: #2b579a; margin-bottom: 2rem;'>Inloggen</h2>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.stop()  # Stop verdere uitvoering totdat het wachtwoord correct is
+    # 2. Initialiseert alle sessievariabelen die we nodig hebben
+    initialize_session_state()
 
-    create_header()  # Voeg de header toe aan de applicatie
+    # 3. Controleer of de gebruiker is ingelogd
+    # if not check_password():
+    #     # Zo niet, toon dan alleen een inlogscherm
+    #     st.markdown(
+    #         """
+    #         <div style='padding: 2rem; max-width: 400px; margin: 0 auto;'>
+    #             <h2 style='color: #2b579a; margin-bottom: 2rem;'>Inloggen</h2>
+    #         </div>
+    #         """,
+    #         unsafe_allow_html=True,
+    #     )
+    #     # Stop hier; pas als het wachtwoord correct is, gaat de rest door
+    #     st.stop()
 
-    # Navigatiebalk in de zijbalk
+    # 4. Toon de header bovenaan de pagina met de geselecteerde omgeving
+    create_header(st.session_state.environment)
+
+    # 5. Zijbalk navigatie: hiermee kan de gebruiker van pagina wisselen
     st.sidebar.title("Navigatie")
     paginas = {
-        "Home": ("🏠", lambda: home.render()),  # Paginanaam: (Icon, render functie)
+        "Home": ("🏠", lambda: home.render()),
         "PO Daken": ("🏢", lambda: po_daken.render(st.session_state.api_client))
     }
 
-    # Laat de gebruiker een pagina selecteren
+    # 6. Toon een radioknop menu in de zijbalk voor het kiezen van de pagina
     geselecteerde_pagina = st.sidebar.radio(
         "Ga naar",
         list(paginas.keys()),
-        format_func=lambda x: f"{paginas[x][0]} {x}"  # Formatteer met icoon
+        format_func=lambda x: f"{paginas[x][0]} {x}"  # Voeg een icoontje toe aan de paginanaam
     )
 
-    st.session_state.current_page = geselecteerde_pagina  # Sla de geselecteerde pagina op
+    # Sla de huidige pagina op in de sessie
+    st.session_state.current_page = geselecteerde_pagina
 
-    # Render de geselecteerde pagina
-    paginas[geselecteerde_pagina][1]()  # Roep de render functie aan
+    # 7. Render de inhoud van de geselecteerde pagina
+    paginas[geselecteerde_pagina][1]()
 
+    # 8. Onderin, onder een 'expander', tonen we de logberichten.
     with st.expander("📋 Log", expanded=False):
         for msg in st.session_state.log_messages:
-            st.write(msg)  # Toon elk logbericht
+            st.write(msg)
 
+
+# Voer de main functie uit als dit bestand direct wordt gestart.
 if __name__ == "__main__":
-    main()  # Start de applicatie wanneer het script direct wordt uitgevoerd
+    main()

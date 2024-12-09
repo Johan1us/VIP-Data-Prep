@@ -10,10 +10,17 @@ logger = logging.getLogger(__name__)
 class Config:
     # Required environment variables
     REQUIRED_VARS: Dict[str, str] = {
-        "LUXS_ACCEPT_CLIENT_ID": "Client ID for API authentication",
-        "LUXS_ACCEPT_CLIENT_SECRET": "Client secret for API authentication",
-        "LUXS_ACCEPT_API_URL": "Base URL for the LUXS API",
-        "LUXS_ACCEPT_AUTH_URL": "Authentication URL for the LUXS API",
+        # Acceptatie environment
+        "LUXS_ACCEPT_CLIENT_ID": "Client ID for API authentication (Acceptatie)",
+        "LUXS_ACCEPT_CLIENT_SECRET": "Client secret for API authentication (Acceptatie)",
+        "LUXS_ACCEPT_API_URL": "Base URL for the LUXS API (Acceptatie)",
+        "LUXS_ACCEPT_AUTH_URL": "Authentication URL for the LUXS API (Acceptatie)",
+
+        # Production environment
+        "LUXS_PROD_CLIENT_ID": "Client ID for API authentication (Production)",
+        "LUXS_PROD_CLIENT_SECRET": "Client secret for API authentication (Production)",
+        "LUXS_PROD_API_URL": "Base URL for the LUXS API (Production)",
+        "LUXS_PROD_AUTH_URL": "Authentication URL for the LUXS API (Production)",
     }
 
     @classmethod
@@ -28,7 +35,7 @@ class Config:
         for var, description in cls.REQUIRED_VARS.items():
             value = os.environ.get(var)
             # Force HTTPS for API and Auth URLs
-            if var in ["LUXS_ACCEPT_API_URL", "LUXS_ACCEPT_AUTH_URL"] and value:
+            if "_API_URL" in var or "_AUTH_URL" in var and value:
                 if value.startswith("http://"):
                     value = value.replace("http://", "https://")
                     logger.debug(f"Converted {var} to HTTPS")

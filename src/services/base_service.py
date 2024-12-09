@@ -26,6 +26,7 @@ class BasePOService:
         return buildings
 
     def export_to_excel(self, data: List[Dict[str, Any]]) -> io.BytesIO:
+        logger.debug("Exporteren van data naar Excel...")
         return self.excel_handler.create_excel_file(data)
 
     def process_uploaded_data(self, df: pd.DataFrame) -> bool:
@@ -35,18 +36,26 @@ class BasePOService:
         self._validate_data(df)
 
         # Omzetten DataFrame -> updates
+        logger.debug("Omzetten van DataFrame naar update objecten...")
         update_data = []
         for _, row in df.iterrows():
+            logger.debug(f"Verwerken rij: {row}")
             building_update = self._row_to_update_object(row)
+
+            logger.debug(f"Update object: {building_update}")
             update_data.append(building_update)
 
         return self.update_buildings_in_batches(update_data)
 
     def _validate_data(self, df: pd.DataFrame) -> None:
+        logger.debug("Valideren van geüploade data...")
         df = df.where(pd.notnull(df), None)
 
         # Valideer op basis van metadata
         for column, attribute_key in self.columns_mapping.items():
+            logger.debug(
+                f"Valideren van kolom {column} met attribuut {attribute_key}"
+            )
             if attribute_key == 'identifier':
                 continue  # identifier wordt vaak niet gevalideerd
 
@@ -58,6 +67,9 @@ class BasePOService:
             col_values = df[column].dropna().unique()
             # Typechecks en option checks
             # Als er attributeValueOptions zijn, controleer of alle values daarin zitten
+            logger.debug(
+                f"Type: {attr_meta['type']}, Options: {attr_meta.get('attributeValueOptions')}"
+            )
             if 'attributeValueOptions' in attr_meta:
                 valid_options = attr_meta['attributeValueOptions']
                 invalid = [v for v in col_values if v not in valid_options]
@@ -66,6 +78,7 @@ class BasePOService:
                                      f"verwacht: {valid_options}")
 
             # Boolean checks
+            logger.debug(f"Type: {attr_meta['type']}")
             if attr_meta['type'] == 'BOOLEAN':
                 valid_bools = [True, False, "TRUE", "FALSE", "Ja", "Nee", 1, 0, None]
                 invalid_bools = [v for v in col_values if v not in valid_bools]
@@ -75,15 +88,20 @@ class BasePOService:
 
     def _row_to_update_object(self, row: pd.Series) -> Dict[str, Any]:
         # Hier converteren we elke kolom naar het juiste formaat op basis van metadata
+        logger.debug(f"Verwerken rij: {row}")
         attributes = {}
         for col_name, attr_key in self.columns_mapping.items():
-            if attr_key == 'identifier':
+            logger.debug(f"Verwerken kolom {col_name} met attribuut {attr_key}")
+            if attr_key in ['objectType', 'identifier']:
                 continue
             attr_meta = self.metadata.get(attr_key)
+            logger.debug(f"Metadata voor attribuut {attr_key}: {attr_meta}")
             value = row[col_name]
+            logger.debug(f"Waarde: {value}")
 
             # Converteer waarde op basis van type
             converted_value = self._convert_value(value, attr_meta)
+            logger.debug(f"Converteer waarde {value} naar {converted_value}")
 
             attributes[attr_meta['name']] = converted_value
 
@@ -117,11 +135,13 @@ class BasePOService:
         # Voeg hier indien nodig meer typeconversies toe
         return value
 
-    def _to_boolean(self, value) -> str:
+    def _to_boolean(self, value) -> bool:
         val_str = str(value).lower()
         if val_str in ['true', '1', 'yes', 'ja']:
-            return "true"
-        return "false"
+            return True
+        elif val_str in ['false', '0', 'no', 'nee']:
+            return False
+        return None
 
     def _convert_jaar_onderhoud(self, value):
         # Probeer jaartal te bepalen:

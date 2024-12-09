@@ -29,10 +29,11 @@ METADATA_DAKEN = {
 
 # Mapping van Excel kolom naar interne keys in METADATA_DAKEN:
 COLUMNS_MAPPING_DAKEN = {
+    "objectType": "objectType",
     "identifier": "identifier",
-    "Dakpartner - Building - Woonstad Rotterdam": "dakpartner",
-    "Jaar laatste dakonderhoud - Building - Woonstad Rotterdam": "jaar_laatste_dakonderhoud",
-    "Betrokken Projectleider Techniek Daken - Building - Woonstad Rotterdam": "projectleider",
-    "Dakveiligheidsvoorzieningen aangebracht  - Building - Woonstad Rotterdam": "dakveiligheid",
-    "Antenne(opstelplaats) op dak  - Building - Woonstad Rotterdam": "antenne"
+    "Dakpartner": "dakpartner",
+    "Jaar Laatste Dakonderhoud": "jaar_laatste_dakonderhoud",
+    "Projectleider Techniek Daken": "projectleider",
+    "Dakveiligheid": "dakveiligheid",
+    "Antenne": "antenne"
 }

@@ -371,9 +371,9 @@
 # from services.api import get_api_client
 from utils.excel_utils_ import ExcelHandler
 from services.base_service import BasePOService
-from config.config_po_daken import METADATA_DAKEN, COLUMNS_MAPPING_DAKEN
+from configuratie.config_po_daken import METADATA_DAKEN, COLUMNS_MAPPING_DAKEN
 
 class PODakenService(BasePOService):
     def __init__(self, luxs_api_client):
-        excel_handler = ExcelHandler(METADATA_DAKEN)
+        excel_handler = ExcelHandler(METADATA_DAKEN, COLUMNS_MAPPING_DAKEN)
         super().__init__(luxs_api_client, excel_handler, METADATA_DAKEN, COLUMNS_MAPPING_DAKEN)
