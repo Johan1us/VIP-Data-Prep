@@ -1,5 +1,9 @@
-Ik wil de volgende code overdragen aan mijn collega. Mijn collega is Data Engineer en kan een klein beetje python,
-maar hij is geen developer. Ik wil dat hij de code makkelijk kan lezen en begrijpen. Kun je daarom de code herschrijven/
-verfijnen, het liefst met comments erbij, in logische stappen en in het Nederlands.
+Ik wil de volgende code overdragen aan mijn collega.
+Mijn collega is Data Engineer en heeft enige basiskennis van Python,
+maar hij is geen ontwikkelaar.
+Ik wil dat hij de code gemakkelijk kan lezen en begrijpen.
+Kun je de code daarom herschrijven en verfijnen,
+bij voorkeur met duidelijke opmerkingen erbij?
+Het zou fijn zijn als de stappen logisch zijn opgebouwd en in het Nederlands worden uitgelegd.
 
 Dit is de code:
