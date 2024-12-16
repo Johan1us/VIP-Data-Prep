@@ -20,149 +20,158 @@ def render(luxs_api_client):
     """
     st.title("PO Daken")
 
-    try:
-        # 1. Initialiseer de service om data over PO Daken te beheren.
-        po_daken_service = PODakenService(luxs_api_client)
-        logger.debug("PO Daken service succesvol geïnitialiseerd.")
+    # Get the selected env from the session state
+    selected_env = st.session_state.environment
+    logger.debug(f"Selected environment: {selected_env}")
 
-        # 2. Maak twee tabbladen: een voor downloaden en een voor uploaden.
-        tab_download, tab_upload = st.tabs(["Download Data", "Upload Updates"])
+    # try:
+    # 1. Initialiseer de service om data over PO Daken te beheren.
+    po_daken_service = PODakenService(luxs_api_client)
 
-        # -------------------------------------
-        # TAB 1: Download Data
-        # -------------------------------------
-        with tab_download:
-            st.markdown("### 📥 Download PO Daken Dataset")
+    print(po_daken_service)
+    logger.debug("PO Daken service succesvol geïnitialiseerd.")
 
-            # Als de gebruiker op de downloadknop klikt, voer dan het downloadproces uit.
-            if st.button("Download PO Daken Dataset"):
-                # Voor visuele feedback maken we een voortgangsbalk en statusberichten
-                progress_bar = st.progress(0)
-                status_text = st.empty()
+    # 2. Maak twee tabbladen: een voor downloaden en een voor uploaden.
+    tab_download, tab_upload = st.tabs(["Download Data", "Upload Updates"])
 
-                try:
-                    # STAP 1: Authenticatie / voorwerk
-                    status_text.text("🔄 Authenticeren met de API...")
-                    progress_bar.progress(20)
+    # -------------------------------------
+    # TAB 1: Download Data
+    # -------------------------------------
+    with tab_download:
+        st.markdown("### 📥 Download PO Daken Dataset")
 
-                    # STAP 2: Haal gebouwen op uit de API (of eventueel uit een lokaal JSON-bestand voor test)
-                    status_text.text("🏢 Ophalen van gebouwen...")
-                    progress_bar.progress(40)
+        # Als de gebruiker op de downloadknop klikt, voer dan het downloadproces uit.
+        if st.button("Download PO Daken Dataset"):
+            # Voor visuele feedback maken we een voortgangsbalk en statusberichten
+            progress_bar = st.progress(0)
+            status_text = st.empty()
 
-                    # dev: Flag om te testen met lokaal opgeslagen data in plaats van een echte API-call.
-                    dev = True
-                    if dev:
-                        # Lees testdata uit een lokaal JSON-bestand
-                        buildings = pd.read_json("src/buildings.json").to_dict('records')
-                    else:
-                        # Haal data op via de service
-                        buildings = po_daken_service.get_all_buildings()
+            # try:
+            # STAP 1: Authenticatie / voorwerk
+            status_text.text("🔄 Authenticeren met de API...")
+            progress_bar.progress(20)
 
-                    # print de eerste 5 gebouwen
-                    logger.debug(f"Gebruikte kolommen: {COLUMNS_MAPPING_DAKEN}")
-                    logger.debug(f"Kolommen van gebouwen: {buildings[0].keys()}")
-                    logger.debug(f"Voorbeeld van gebouwen: {buildings[:2]}")
+            # STAP 2: Haal gebouwen op uit de API (of eventueel uit een lokaal JSON-bestand voor test)
+            status_text.text("🏢 Ophalen van gebouwen...")
+            progress_bar.progress(40)
 
-                    # Controleer of er gebouwen zijn opgehaald
-                    if buildings:
-                        # STAP 3: Verwerk de data en pas kolomnamen aan volgens COLUMNS_MAPPING_DAKEN
-                        status_text.text("📊 Verwerken van data...")
-                        progress_bar.progress(60)
+            # dev: Flag om te testen met lokaal opgeslagen data in plaats van een echte API-call.
+            dev = False
+            if dev:
+                # Lees testdata uit een lokaal JSON-bestand
+                buildings = pd.read_json("src/buildings.json").to_dict('records')
+            else:
+                # Haal data op via de service
+                buildings = po_daken_service.get_all_buildings()
 
-                        # # Hernoem de kolommen op basis van COLUMNS_MAPPING_DAKEN
-                        # # buildings is een lijst van dictionaries (per gebouw)
-                        # buildings = [
-                        #     {COLUMNS_MAPPING_DAKEN.get(k, k): v for k, v in building.items()}
-                        #     for building in buildings
-                        # ]
+            print(f"buildings: {len(buildings)}")
 
-                        # STAP 4: Genereer een Excel-bestand van de opgehaalde data
-                        status_text.text("📝 Genereren van Excel bestand...")
-                        progress_bar.progress(80)
 
-                        excel_data = po_daken_service.export_to_excel(buildings)
+            # print de eerste 5 gebouwen
+            logger.debug(f"Gebruikte kolommen: {COLUMNS_MAPPING_DAKEN}")
+            logger.debug(f"Kolommen van gebouwen: {buildings[0].keys()}")
+            logger.debug(f"Voorbeeld van gebouwen: {buildings[:2]}")
 
-                        # Controleer of Excel succesvol is aangemaakt
-                        progress_bar.progress(100)
-                        if excel_data:
-                            status_text.empty()
-                            st.success("✅ PO Daken dataset succesvol gegenereerd!")
+            # Controleer of er gebouwen zijn opgehaald
+            if buildings:
+                # STAP 3: Verwerk de data en pas kolomnamen aan volgens COLUMNS_MAPPING_DAKEN
+                status_text.text("📊 Verwerken van data...")
+                progress_bar.progress(60)
 
-                            # Bied de gebruiker een downloadknop aan voor de Excel-file
-                            st.download_button(
-                                label="📥 Download Excel file",
-                                data=excel_data,
-                                file_name="PO_Daken_Dataset.xlsx",
-                                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                            )
-                        else:
-                            # Kon geen Excel bestand genereren
-                            status_text.empty()
-                            st.error("❌ Er is een fout opgetreden bij het genereren van het Excel-bestand.")
-                    else:
-                        # Geen gebouwen gevonden
-                        status_text.empty()
-                        st.error("❌ Geen data beschikbaar om te exporteren.")
+                # # Hernoem de kolommen op basis van COLUMNS_MAPPING_DAKEN
+                # # buildings is een lijst van dictionaries (per gebouw)
+                # buildings = [
+                #     {COLUMNS_MAPPING_DAKEN.get(k, k): v for k, v in building.items()}
+                #     for building in buildings
+                # ]
 
-                    # Verwijder voortgangsbalk
-                    progress_bar.empty()
+                # STAP 4: Genereer een Excel-bestand van de opgehaalde data
+                status_text.text("📝 Genereren van Excel bestand...")
+                progress_bar.progress(80)
 
-                except Exception as e:
-                    # Fout tijdens het downloadproces
-                    error_msg = f"❌ Er is een fout opgetreden bij het downloaden: {str(e)}"
-                    logger.error(error_msg)
-                    st.error(error_msg)
-                    progress_bar.empty()
+                excel_data = po_daken_service.export_to_excel(buildings)
+
+                # Controleer of Excel succesvol is aangemaakt
+                progress_bar.progress(100)
+                if excel_data:
                     status_text.empty()
+                    st.success("✅ PO Daken dataset succesvol gegenereerd!")
 
-        # -------------------------------------
-        # TAB 2: Upload Updates
-        # -------------------------------------
-        with tab_upload:
-            st.markdown("### 📤 Upload bijgewerkte PO Daken Dataset")
+                    # Bied de gebruiker een downloadknop aan voor de Excel-file
+                    st.download_button(
+                        label="📥 Download Excel file",
+                        data=excel_data,
+                        file_name="PO_Daken_Dataset.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                else:
+                    # Kon geen Excel bestand genereren
+                    status_text.empty()
+                    st.error("❌ Er is een fout opgetreden bij het genereren van het Excel-bestand.")
+            else:
+                # Geen gebouwen gevonden
+                status_text.empty()
+                st.error("❌ Geen data beschikbaar om te exporteren.")
 
-            # Gebruiker kan hier een Excel-bestand uploaden met bijgewerkte data.
-            uploaded_file = st.file_uploader("Selecteer een Excel bestand", type=['xlsx'])
+            # Verwijder voortgangsbalk
+            progress_bar.empty()
 
-            if uploaded_file is not None:
-                try:
+            # except Exception as e:
+            #     # Fout tijdens het downloadproces
+            #     error_msg = f"❌ Er is een fout opgetreden bij het downloaden: {str(e)}"
+            #     logger.error(error_msg)
+            #     st.error(error_msg)
+            #     progress_bar.empty()
+            #     status_text.empty()
+
+    # -------------------------------------
+    # TAB 2: Upload Updates
+    # -------------------------------------
+    with tab_upload:
+        st.markdown("### 📤 Upload bijgewerkte PO Daken Dataset")
+
+        # Gebruiker kan hier een Excel-bestand uploaden met bijgewerkte data.
+        uploaded_file = st.file_uploader("Selecteer een Excel bestand", type=['xlsx'])
+
+        if uploaded_file is not None:
+            try:
 
 
-                    # Lees het geüploade Excel-bestand in
-                    df = pd.read_excel(uploaded_file)
-                    logger.debug(f"Eerst regels df {df.head()}")
+                # Lees het geüploade Excel-bestand in
+                df = pd.read_excel(uploaded_file)
+                logger.debug(f"Eerst regels df {df.head()}")
 
-                    # Toon een voorbeeld van de eerste rijen om te valideren of het bestand correct is
-                    st.write("Voorbeeld van de geüploade data:")
-                    st.dataframe(df.head())
+                # Toon een voorbeeld van de eerste rijen om te valideren of het bestand correct is
+                st.write("Voorbeeld van de geüploade data:")
+                st.dataframe(df.head())
 
-                    # Knop om de data naar de API te sturen
-                    if st.button("Valideren en Uploaden"):
-                        with st.spinner("Valideren en uploaden van data..."):
-                            try:
-                                # Probeer de data te verwerken via de service
-                                logger.debug("Valideer en Upload data"                             )
-                                success = po_daken_service.process_uploaded_data(df)
-                                if success:
-                                    st.success("✅ Data succesvol geüpload!")
-                                else:
-                                    st.error("❌ Fout bij het uploaden van data.")
-                            except Exception as e:
-                                foutmelding = f"❌ Fout bij het verwerken van data: {str(e)}"
-                                st.error(foutmelding)
-                                logger.error(f"Fout bij geüploade data verwerken: {str(e)}")
+                # Knop om de data naar de API te sturen
+                if st.button("Valideren en Uploaden"):
+                    with st.spinner("Valideren en uploaden van data..."):
+                        try:
+                            # Probeer de data te verwerken via de service
+                            logger.debug("Valideer en Upload data"                             )
+                            success = po_daken_service.process_uploaded_data(df)
+                            if success:
+                                st.success("✅ Data succesvol geüpload!")
+                            else:
+                                st.error("❌ Fout bij het uploaden van data.")
+                        except Exception as e:
+                            foutmelding = f"❌ Fout bij het verwerken van data: {str(e)}"
+                            st.error(foutmelding)
+                            logger.error(f"Fout bij geüploade data verwerken: {str(e)}")
 
-                except Exception as e:
-                    # Fout bij het inlezen van het geüploade bestand
-                    foutmelding = f"❌ Fout bij het inlezen van het bestand: {str(e)}"
-                    st.error(foutmelding)
-                    logger.error(f"Fout bij inlezen geüpload bestand: {str(e)}")
+            except Exception as e:
+                # Fout bij het inlezen van het geüploade bestand
+                foutmelding = f"❌ Fout bij het inlezen van het bestand: {str(e)}"
+                st.error(foutmelding)
+                logger.error(f"Fout bij inlezen geüpload bestand: {str(e)}")
 
-    except Exception as e:
-        # Als de service niet kon worden geïnitialiseerd
-        error_msg = f"❌ Er is een fout opgetreden bij het initialiseren van de PO Daken service: {str(e)}"
-        logger.error(error_msg)
-        st.error(error_msg)
+    # except Exception as e:
+    #     # Als de service niet kon worden geïnitialiseerd
+    #     error_msg = f"❌ Er is een fout opgetreden bij het initialiseren van de PO Daken service: {str(e)}"
+    #     logger.error(error_msg)
+    #     st.error(error_msg)
 
 
 def handle_upload(uploaded_file, po_daken_service):

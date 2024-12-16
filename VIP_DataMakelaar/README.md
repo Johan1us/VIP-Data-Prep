@@ -46,7 +46,10 @@ Dit bespaart tijd, voorkomt fouten en zorgt voor consistente data in het VIP-sys
 2. Installeer afhankelijkheden:
    `pip install -r requirements.txt`
 3. Start de app:
-   `streamlit run app/main.py`
+```bash
+streamlit run app/main.py
+```
+4.
 
 Open vervolgens de link die Streamlit toont in je browser (meestal http://localhost:8501).
 

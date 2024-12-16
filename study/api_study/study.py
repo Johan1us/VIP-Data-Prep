@@ -248,16 +248,16 @@ if __name__ == "__main__":
 
     if token:
         # Example usage of get_metadata
-        # metadata = get_metadata('IfcUpload', token=token)
+        metadata = get_metadata('Unit', token=token)
 
         # Example usage of update_toilet_floor
         # response = update_toilet_floor("10000000025", "beton", token=token)
         # print(f"\nResponse: {response}")
 
         # Example usage of get_object_by_filter
-        object_data = get_object_by_filter(
-            "Unit", {"identifier": "10000000025"}, "10000000025", token=token
-        )
+        # object_data = get_object_by_filter(
+        #     "Unit", {"identifier": "10000000025"}, "10000000025", token=token
+        # )
 
         # Example data structure
         # sample_data = [
