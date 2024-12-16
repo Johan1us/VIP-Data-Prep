@@ -6,16 +6,54 @@ import io
 import pandas as pd
 import os
 import json
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 def load_css():
+    """
+    Laad het CSS bestand met uitgebreide debugging.
+    """
     try:
-        css_file = os.path.join(os.path.dirname(__file__), "assets", "css", "style.css")
+        # 1. Print huidige directory en bestandslocatie
+        current_file = __file__
+        current_dir = os.path.dirname(__file__)
+
+
+        # 2. Bouw het CSS pad op en controleer bestaan
+        css_file = os.path.join(current_dir, "assests", "css", "style.css")
+
         if os.path.exists(css_file):
-            with open(css_file) as f:
-                st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+            try:
+                # 3. Probeer het bestand te lezen
+                with open(css_file, 'r', encoding='utf-8') as f:
+                    css_content = f.read()
+                    st.markdown(f'<style>{css_content}</style>', unsafe_allow_html=True)
+
+            except Exception as read_error:
+                st.error(f"Fout bij lezen CSS bestand: {str(read_error)}")
         else:
-            st.warning(f"CSS bestand niet gevonden op pad: {css_file}")
-            # Gebruik een basis CSS als fallback
+            # 4. Als het bestand niet gevonden is, toon directory inhoud
+            st.error(f"CSS bestand niet gevonden op: {css_file}")
+            st.write("Directory structuur:")
+
+            # Toon de inhoud van de huidige directory
+            try:
+                st.write("Inhoud van huidige directory:")
+                st.write(os.listdir(current_dir))
+
+                # Controleer of assests map bestaat
+                assests_path = os.path.join(current_dir, "assests")
+                if os.path.exists(assests_path):
+                    st.write("Inhoud van assests directory:")
+                    st.write(os.listdir(assests_path))
+                else:
+                    st.error("'assests' directory bestaat niet!")
+            except Exception as dir_error:
+                st.error(f"Fout bij controleren directories: {str(dir_error)}")
+
+            # 5. Gebruik fallback CSS
+            st.warning("Gebruik fallback CSS styling...")
             st.markdown("""
                 <style>
                     .stButton>button {
@@ -31,8 +69,11 @@ def load_css():
                 </style>
             """, unsafe_allow_html=True)
     except Exception as e:
-        st.warning(f"Kon CSS niet laden: {str(e)}")
-        # Gebruik dezelfde fallback CSS als hierboven
+        st.error("=== CSS Laad Fout ===")
+        st.error(f"Type fout: {type(e).__name__}")
+        st.error(f"Foutmelding: {str(e)}")
+        import traceback
+        st.code(traceback.format_exc())
 
 class DatasetManager:
     def __init__(self, config_folder):
@@ -330,11 +371,13 @@ def show_login():
     username = st.text_input("Gebruikersnaam")
     password = st.text_input("Wachtwoord", type="password")
     if st.button("Login"):
-        if username == "admin" and password == "secret":  # Dummy credentials
+        if username == "admin" and password == "Supergeheim123!":  # Dummy credentials
             st.session_state["logged_in"] = True
             st.rerun()
         else:
             st.error("Ongeldige inloggegevens, probeer opnieuw.")
+
+load_css()
 
 if "logged_in" not in st.session_state:
     is_ingelogd = True
