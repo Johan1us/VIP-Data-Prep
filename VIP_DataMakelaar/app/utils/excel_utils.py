@@ -179,6 +179,27 @@ class ExcelHandler:
                 # na_action='ignore' betekent dat NaN waarden niet worden aangepast.
                 df[key] = df[key].map({'true': 'Ja', 'false': 'Nee'}, na_action='ignore')
 
+        # Date kolommen met dateFormat 'yyyy' omzetten naar jaartallen
+        date_year_keys = [k for k, v in self.metadata.items() if v.get('type') == 'DATE' and v.get('dateFormat') == 'yyyy']
+        for key in date_year_keys:
+            if key in df.columns:
+                # Create a mask for non-null values
+                non_null_mask = df[key].notna()
+
+                # Only process dates where we have actual values
+                if non_null_mask.any():
+                    # Map '2014-12-31T23:00:00Z' -> '2015'
+                    date = pd.to_datetime(df.loc[non_null_mask, key], errors='coerce')
+                    # Check of de datum op het einde van het jaar valt om 23:00 (vectorized operation)
+                    end_of_year_mask = (date.dt.month == 12) & (date.dt.day == 31) & (date.dt.hour == 23)
+
+                    # Update only the rows with actual dates
+                    df.loc[non_null_mask & end_of_year_mask, key] = (date[end_of_year_mask].dt.year + 1).astype(str)
+                    df.loc[non_null_mask & ~end_of_year_mask, key] = date[~end_of_year_mask].dt.year.astype(str)
+
+                # Set all remaining null values to empty string
+                df[key] = df[key].replace({pd.NA: '', pd.NaT: '', None: '', 'nan': '', float('nan'): ''})
+
         # Controleer of alle vereiste kolommen bestaan, zo niet, voeg ze toe met None
         for rc in self.required_columns:
             if rc not in df.columns:
