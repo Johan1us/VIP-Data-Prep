@@ -5,5 +5,9 @@ Ik wil dat hij de code gemakkelijk kan lezen en begrijpen.
 Kun je de code daarom herschrijven en verfijnen,
 bij voorkeur met duidelijke opmerkingen erbij?
 Het zou fijn zijn als de stappen logisch zijn opgebouwd en in het Nederlands worden uitgelegd.
+Leg ook de keuzes uit die gemaakt zijn in de code.
+Eindig met een if __name__ == "__main__": blok.
+In dit blok moet de onafhankelijke functies worden aangeroepen voor debuggen.
+Gebruik type hints en docstrings.
 
 Dit is de code:

@@ -92,7 +92,7 @@ def handle_excel_download(config, api_client):
 
     # Get metadata and dataset
     metadata = api_client.get_metadata(object_type)
-    response_data = api_client.get_objects(
+    response_data = api_client.get_all_objects(
         object_type=object_type,
         attributes=attribute_names,
         only_active=True
