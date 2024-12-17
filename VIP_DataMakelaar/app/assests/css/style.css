@@ -24,6 +24,36 @@ h1, h2, h3 {
     color: #2b579a;
     border: 1px solid #2b579a;
 }
+/* Download button */
+.stDownloadButton>button {
+    background-color: #ffffff;
+    color: #2b579a;
+    border: 1px solid #2b579a;
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-weight: 400;
+    margin: 0;
+}
+.stDownloadButton>button:hover {
+    background-color: #f0f2f6;
+    color: #2b579a;
+    border: 1px solid #2b579a;
+}
+
+
+/* Select dropdowns */
+.stSelect>div>div>div {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 4px 12px;
+    border-radius: 2px;
+}
+.stSelect>div>div>div:hover {
+    background-color: #f0f2f6;
+    color: #2b579a;
+}
+
+
 
 /* Text inputs */
 .stTextInput>div>div>input {

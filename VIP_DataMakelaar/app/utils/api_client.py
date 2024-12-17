@@ -340,7 +340,10 @@ if __name__ == "__main__":
 
     # Haal metadata op (bijvoorbeeld alle metadata)
     print("[DEBUG] Ophalen volledige metadata:")
-    all_metadata = api_client.get_metadata("Building")
+    all_metadata = api_client.get_metadata()
+    # save maetadata to a file metadata.json
+    with open('metadata.json', 'w') as f:
+        json.dump(all_metadata, f)
     print("[DEBUG] Metadata (eerste 200 chars):", str(all_metadata)[:200], "...")
 
     # Haal objecten op van een bepaald type (bijv. Building)

@@ -162,20 +162,24 @@ def handle_excel_download(config, api_client):
     return excel_file
 
 def show_home():
-    st.title("Welkom bij de VIP DataMakelaar")
-    st.write("Je bent ingelogd! Hier kun je datasets selecteren en bewerken.")
+    st.title("VIP DataMakelaar")
+    # Add 'Stap 1' header
+    st.header("Stap 1: Selecteer een dataset")
+    # st.write("Hier kun je datasets selecteren en bewerken.")
 
     config_folder = os.path.join(os.path.dirname(__file__), "config")
     dataset_manager = DatasetManager(config_folder)
 
     # Dataset selection
     datasets = dataset_manager.get_available_datasets()
-    selected_dataset = st.selectbox("Selecteer een dataset", datasets, index=0)
+    selected_dataset = st.selectbox("Dataset", datasets, index=0)
 
     if selected_dataset != "Geen dataset geselecteerd":
         config = dataset_manager.get_dataset_config(selected_dataset)
         if config:
             show_dataset_fields(config)
+
+            st.header("Stap 2: Download Excel")
 
             if st.button("Geneer Excel"):
                 st.write(f"Excel voor {selected_dataset} wordt gegenereerd...")
@@ -207,6 +211,7 @@ def show_home():
 
                     st.info("💡 Suggestie: Controleer of alle benodigde configuraties correct zijn en of er verbinding is met de API.")
 
+            st.header("Stap 3: Upload Excel")
             # Maak een upload veld om de excel file te uploaden zodat deze kan worden gevalideerd
             excel_file = st.file_uploader("Upload Excel", type=["xlsx"])
 
@@ -231,8 +236,8 @@ def show_home():
                         None
                     )
 
-                    if jaar_attribute:
-                        st.write("📅 Datumformaat configuratie:", jaar_attribute.get('dateFormat', 'Geen datumformaat gevonden'))
+                    # if jaar_attribute:
+                    #     st.write("📅 Datumformaat configuratie:", jaar_attribute.get('dateFormat', 'Geen datumformaat gevonden'))
 
                     # Bouw de metadata map en columns mapping
                     columns_mapping = {attr["excelColumnName"]: attr["AttributeName"] for attr in config["attributes"]}
@@ -249,7 +254,7 @@ def show_home():
                     else:
                         st.success("De Excel is succesvol gevalideerd! Alle data voldoet aan de vereisten.")
 
-                        if st.button("Verstuur naar API"):
+                        if st.button("Upload naar VIP"):
                             try:
                                 st.info("Data wordt verstuurd naar de API...")
 
@@ -301,26 +306,26 @@ def show_home():
                                     data_to_send.append(obj)
 
                                 # Log request details
-                                st.write("🔍 API Request Details:")
-                                st.json({
-                                    "url": f"{dataset_manager.api_client.base_url}/v1/objects",
-                                    "method": "PUT",
-                                    "headers": dataset_manager.api_client._headers(),
-                                    "request_body_sample": data_to_send[:2]
-                                })
+                                # st.write("🔍 API Request Details:")
+                                # st.json({
+                                #     "url": f"{dataset_manager.api_client.base_url}/v1/objects",
+                                #     "method": "PUT",
+                                #     "headers": dataset_manager.api_client._headers(),
+                                #     "request_body_sample": data_to_send[:2]
+                                # })
 
                                 # Send data to API
                                 response = dataset_manager.api_client.update_objects(objects_data=data_to_send)
 
                                 # Log response details
-                                st.write("📥 API Response Details:")
-                                st.json({
-                                    "status_code": 200,
-                                    "response_sample": response[:2] if response else None,
-                                    "total_objects": len(response) if response else 0,
-                                    "successful": sum(1 for r in response if r['success']) if response else 0,
-                                    "failed": sum(1 for r in response if not r['success']) if response else 0
-                                })
+                                # st.write("📥 API Response Details:")
+                                # st.json({
+                                #     "status_code": 200,
+                                #     "response_sample": response[:2] if response else None,
+                                #     "total_objects": len(response) if response else 0,
+                                #     "successful": sum(1 for r in response if r['success']) if response else 0,
+                                #     "failed": sum(1 for r in response if not r['success']) if response else 0
+                                # })
 
                                 if response:
                                     # Toon gedetailleerd rapport
